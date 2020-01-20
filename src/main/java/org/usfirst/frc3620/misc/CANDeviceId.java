@@ -6,7 +6,7 @@ package org.usfirst.frc3620.misc;
  */
 public class CANDeviceId implements Comparable<CANDeviceId> {
 
-    public enum CANDeviceType {PDP, PCM, SRX, SPX, MAX}
+    public enum CANDeviceType {PDP, PCM, SRX, SPX, FX, MAX}
 
     private CANDeviceType deviceType;
     private int deviceNumber;

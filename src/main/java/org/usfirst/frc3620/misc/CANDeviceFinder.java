@@ -149,6 +149,8 @@ public class CANDeviceFinder {
         92 0x05C = 02041701
         93 0x05D = 02041741
         94 0x05E = 02041781
+
+        2020.01.20 Device id is 0x0204 (https://github.com/CrossTheRoadElec/Phoenix-api/blob/master/src/main/java/com/ctre/phoenix/motorcontrol/can/TalonSRX.java)
         */
         finders.add(new DeviceFinder(2, 4, extractApiId(0x02041441), 64, deviceSet, CANDeviceType.SRX));
 
@@ -163,6 +165,8 @@ public class CANDeviceFinder {
         92 0x05C = 01041702
         93 0x05D = 01041742
         94 0x05E = 01041782
+
+        2020.01.20 Device id is 0x0104 (https://github.com/CrossTheRoadElec/Phoenix-api/blob/master/src/main/java/com/ctre/phoenix/motorcontrol/can/VictorSPX.java)
         */
         finders.add(new DeviceFinder(1, 4, extractApiId(0x01041442), 64, deviceSet, CANDeviceType.SPX));
 
