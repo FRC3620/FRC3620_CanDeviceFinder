@@ -98,7 +98,7 @@ public class CANDeviceFinder {
 
     class APIFinder extends CanFinder {
         CANDeviceType canDeviceType;
-        APIFinder(CANDeviceType canDeviceType, int devType, int mfg, int deviceId) {
+        APIFinder(int devType, int mfg, int deviceId, CANDeviceType canDeviceType) {
             super();
             this.canDeviceType = canDeviceType;
 
@@ -124,10 +124,6 @@ public class CANDeviceFinder {
      */
     public void find() {
         logger.info ("calling find()");
-
-        deviceSet.clear();
-        byDeviceType.clear();
-
         List<CanFinder> finders = new ArrayList<>();
 
         /*
@@ -151,8 +147,10 @@ public class CANDeviceFinder {
         94 0x05E = 02041781
 
         2020.01.20 Device id is 0x0204 (https://github.com/CrossTheRoadElec/Phoenix-api/blob/master/src/main/java/com/ctre/phoenix/motorcontrol/can/TalonSRX.java)
+
+        Talon FX and SRX are the same.
         */
-        finders.add(new DeviceFinder(2, 4, extractApiId(0x02041441), 64, deviceSet, CANDeviceType.SRX));
+        finders.add(new DeviceFinder(2, 4, extractApiId(0x02041441), 64, deviceSet, CANDeviceType.TALON));
 
         /*
         SPX used to be 0x01041400.
@@ -168,20 +166,31 @@ public class CANDeviceFinder {
 
         2020.01.20 Device id is 0x0104 (https://github.com/CrossTheRoadElec/Phoenix-api/blob/master/src/main/java/com/ctre/phoenix/motorcontrol/can/VictorSPX.java)
         */
-        finders.add(new DeviceFinder(1, 4, extractApiId(0x01041442), 64, deviceSet, CANDeviceType.SPX));
+        finders.add(new DeviceFinder(1, 4, extractApiId(0x01041442), 64, deviceSet, CANDeviceType.VICTOR_SPX));
 
         /* we always used 0x09041400 for PCMs */
         finders.add(new DeviceFinder(9, 4, extractApiId(0x09041400), 64, deviceSet, CANDeviceType.PCM));
 
         // per REV (0x02051800)
-        finders.add(new DeviceFinder(2, 5, extractApiId(0x02051800), 64, deviceSet, CANDeviceType.MAX));
+        finders.add(new DeviceFinder(2, 5, extractApiId(0x02051800), 64, deviceSet, CANDeviceType.SPARK_MAX));
 
-        // do research
-        /*
-        finders.add(new APIFinder(CANDeviceType.PDP, 8, 4, 0)); // PDP
-        finders.add(new APIFinder(CANDeviceType.SRX, 2, 4, 1)); // SRX #1
-        finders.add(new APIFinder(CANDeviceType.SPX, 1, 4, 2)); // SPX #2
-        */
+        findDetails(finders);
+    }
+
+    public void research() {
+        logger.info ("calling research()");
+        List<CanFinder> finders = new ArrayList<>();
+        
+        finders.add(new APIFinder(8, 4, 0, CANDeviceType.PDP)); // PDP
+        finders.add(new APIFinder(2, 4, 1, CANDeviceType.TALON)); // SRX #1
+        finders.add(new APIFinder(1, 4, 2, CANDeviceType.VICTOR_SPX)); // SPX #2
+
+        findDetails(finders);
+    }
+
+    void findDetails(List<CanFinder> finders) {
+        deviceSet.clear();
+        byDeviceType.clear();
 
         for (CanFinder finder: finders) {
             finder.pass1();
