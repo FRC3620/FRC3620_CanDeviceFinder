@@ -181,6 +181,7 @@ public class CANDeviceFinder {
         logger.info ("calling research()");
         List<CanFinder> finders = new ArrayList<>();
         
+        finders.add(new APIFinder(9, 4, 0, CANDeviceType.PCM)); // PCM
         finders.add(new APIFinder(8, 4, 0, CANDeviceType.PDP)); // PDP
         finders.add(new APIFinder(2, 4, 1, CANDeviceType.TALON)); // SRX #1
         finders.add(new APIFinder(1, 4, 2, CANDeviceType.VICTOR_SPX)); // SPX #2

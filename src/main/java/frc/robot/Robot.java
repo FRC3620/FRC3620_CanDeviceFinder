@@ -7,6 +7,11 @@
 
 package frc.robot;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.misc.CANDeviceFinder;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,6 +29,9 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  CANDeviceFinder canDeviceFinder = new CANDeviceFinder();
+  Logger logger = EventLogging.getLogger(Robot.class, Level.INFO);
+
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -33,6 +41,9 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
+    canDeviceFinder.find();
+    logger.info ("Found: " + canDeviceFinder.getDeviceSet());
   }
 
   /**
@@ -81,11 +92,22 @@ public class Robot extends TimedRobot {
     }
   }
 
+  @Override
+  public void teleopInit() {
+    canDeviceFinder.find();
+    logger.info ("Found: " + canDeviceFinder.getDeviceSet());
+  }
+
   /**
    * This function is called periodically during operator control.
    */
   @Override
   public void teleopPeriodic() {
+  }
+
+  @Override
+  public void testInit() {
+    canDeviceFinder.research();
   }
 
   /**
