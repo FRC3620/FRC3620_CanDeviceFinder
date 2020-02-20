@@ -1,4 +1,4 @@
-package org.usfirst.frc3620.misc;
+package org.usfirst.frc3620.candevicefinder;
 
 /**
  * An object representing a CAN device on the bus. These
@@ -24,7 +24,7 @@ public class CANDeviceId implements Comparable<CANDeviceId> {
     public CANDeviceId (CANDeviceType deviceType, int deviceNumber) {
         this.deviceType = deviceType;
         this.deviceNumber = deviceNumber;
-        this.toString = deviceType.toString() + " " + Integer.toString(deviceNumber);
+        this.toString = deviceType.toString() + " " + deviceNumber;
     }
 
     @Override

@@ -10,7 +10,7 @@ package frc.robot;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
-import org.usfirst.frc3620.misc.CANDeviceFinder;
+import org.usfirst.frc3620.candevicefinder.CANDeviceFinder;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -29,7 +29,7 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  CANDeviceFinder canDeviceFinder = new CANDeviceFinder();
+  CANDeviceFinder canDeviceFinder;
   Logger logger = EventLogging.getLogger(Robot.class, Level.INFO);
 
   /**
@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
-    canDeviceFinder.find();
+    canDeviceFinder = new CANDeviceFinder();
     logger.info ("Found: " + canDeviceFinder.getDeviceSet());
   }
 
