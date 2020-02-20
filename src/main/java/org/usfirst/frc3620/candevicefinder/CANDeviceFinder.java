@@ -1,4 +1,4 @@
-package org.usfirst.frc3620.misc;
+package org.usfirst.frc3620.candevicefinder;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
-import org.usfirst.frc3620.misc.CANDeviceId.CANDeviceType;
+import  org.usfirst.frc3620.candevicefinder.CANDeviceId.CANDeviceType;
 
 import edu.wpi.first.hal.can.CANJNI;
 
@@ -231,11 +231,7 @@ public class CANDeviceFinder {
          */
         for (CANDeviceId canDeviceId: deviceSet) {
             CANDeviceType canDeviceType = canDeviceId.getDeviceType();
-            Set<Integer> deviceNumberSet = byDeviceType.get(canDeviceType);
-            if (deviceNumberSet == null) {
-                deviceNumberSet = new TreeSet<>();//NOPMD
-                byDeviceType.put(canDeviceType, deviceNumberSet);
-            }
+            Set<Integer> deviceNumberSet = byDeviceType.computeIfAbsent(canDeviceType, k -> new TreeSet<>());
             deviceNumberSet.add(canDeviceId.getDeviceNumber());
         }
     }
