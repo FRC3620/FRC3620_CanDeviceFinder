@@ -43,11 +43,11 @@ public class DriverStationAppender extends AbstractAppender {
         // System.out.print ("DS1 on thread " + Thread.currentThread().getName());
         Level level = event.getLevel();
         if (level.isMoreSpecificThan(Level.ERROR)) {
-            HAL.sendError(true, 2, false, sb.toString(), "", "", false);
+            HAL.sendError(true, 3620, false, sb.toString(), "", "", false);
         } else if (level.isMoreSpecificThan(Level.WARN)) {
-            HAL.sendError(false, 2, false, sb.toString(), "", "", false);
+            HAL.sendError(false, 3620, false, sb.toString(), "", "", false);
         } else {
-            System.out.print(sb.toString()); // NOPMD
+            HAL.sendConsoleLine(sb.toString());
         }
     }
 }

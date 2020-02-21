@@ -1,14 +1,17 @@
 package org.usfirst.frc3620.logger.log4j2;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.lookup.StrLookup;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
 @Plugin(name = "roborio", category = StrLookup.CATEGORY)
 public class RoboRIOLookup implements StrLookup {
+    Logger logger = StatusLogger.getLogger();
     public RoboRIOLookup() {
-        System.out.println ("RoboRIOLookup instantiated");
+        logger.info ("RoboRIOLookup instantiated");
     }
     @Override
     public String lookup(String key) {

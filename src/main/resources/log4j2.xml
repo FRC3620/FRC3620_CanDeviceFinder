@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="DEBUG" packages="org.usfirst.frc3620.logger.log4j2">
+<Configuration status="INFO" packages="org.usfirst.frc3620.logger.log4j2">
     <Appenders>
         <Console name="Console">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
@@ -14,7 +14,9 @@
                 </Route>
             </Routes>
         </Routing>
-        <DriverStation name="DS"/>
+        <DriverStation name="DS">
+            <PatternLayout pattern="%level %c{1.} [%t] %m%n"/>
+        </DriverStation>
     </Appenders>
     <Loggers>
         <Root level="trace">

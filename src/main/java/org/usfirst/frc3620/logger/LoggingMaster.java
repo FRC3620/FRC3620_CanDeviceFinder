@@ -4,7 +4,12 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+
 public class LoggingMaster {
+    protected final static Logger logger = StatusLogger.getLogger();
+
     private final static long SOME_TIME_AFTER_1970 = 523980000000L;
 
     private static Date _timestamp = null;
@@ -23,9 +28,7 @@ public class LoggingMaster {
                     
                     if (now > SOME_TIME_AFTER_1970) {
                         _timestamp = new Date();
-                        String logMessage = String.format(
-                                "timestamp for logs is %s\n",convertTimestampToString(_timestamp));
-                        EventLogging.writeWarningToDS(logMessage);
+                        logger.info ("timestamp for logs is {}", convertTimestampToString(_timestamp));
                     }
                 }
             }
@@ -52,6 +55,8 @@ public class LoggingMaster {
                             TimeZone.getTimeZone("America/Detroit"));
 
                     if (_logDirectory == null)
+                        _logDirectory = searchForLogDirectory(new File("/media/sda1"));
+                    if (_logDirectory == null)
                         _logDirectory = searchForLogDirectory(new File("/u"));
                     if (_logDirectory == null)
                         _logDirectory = searchForLogDirectory(new File("/v"));
@@ -65,9 +70,7 @@ public class LoggingMaster {
                             _logDirectory.mkdir();
                         }
                     }
-                    String logMessage = String.format("Log directory is %s\n",
-                            _logDirectory);
-                    System.out.print(logMessage); // NOPMD
+                    logger.info ("Log directory is {}", _logDirectory);
                 }
             }
         }

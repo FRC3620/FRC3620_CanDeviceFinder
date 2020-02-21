@@ -10,11 +10,16 @@ package frc.robot;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.misc.RobotMode;
 import org.usfirst.frc3620.candevicefinder.CANDeviceFinder;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import java.util.function.Consumer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -32,6 +37,10 @@ public class Robot extends TimedRobot {
   CANDeviceFinder canDeviceFinder;
   Logger logger = EventLogging.getLogger(Robot.class, Level.INFO);
 
+  java.util.logging.Logger julLogger;
+
+  static RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
+
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -43,7 +52,41 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto choices", m_chooser);
 
     canDeviceFinder = new CANDeviceFinder();
-    logger.info ("Found: " + canDeviceFinder.getDeviceSet());
+    logger.info ("Found: {}", canDeviceFinder.getDeviceSet());
+
+    CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
+      public void accept(Command command) {
+        logger.info("Initialized {}", command.getClass().getSimpleName());//I scream at people
+      }
+    });
+
+    CommandScheduler.getInstance().onCommandFinish(new Consumer<Command>() {//whenever a command ends, the function declared bellow will run.
+      public void accept(Command command) {
+        logger.info("Ended {}", command.getClass().getSimpleName());//I, too, scream at people
+      }
+    });
+
+    CommandScheduler.getInstance().onCommandInterrupt(new Consumer<Command>() {//whenever a command ends, the function declared bellow will run.
+      public void accept(Command command) {
+        logger.info("Interrupted {}", command.getClass().getSimpleName());//I, in addition, as well, scream.
+      }
+    });
+    
+    logger.debug("debug");
+    logger.info("info");
+    logger.warn("warn");
+    logger.error("error");
+
+    // do this after log4j and EventLogging are loaded
+    julLogger = java.util.logging.Logger.getLogger(getClass().getName());
+    julLogger.setLevel(java.util.logging.Level.FINEST);
+    julLogger.finest("j.u.l finest");
+    julLogger.finer("j.u.l finer");
+    julLogger.fine("j.u.l fine");
+    julLogger.config("j.u.l config");
+    julLogger.info("j.u.l info");
+    julLogger.warning("j.u.l warning");
+    julLogger.severe("j.u.l severe");
   }
 
   /**
@@ -56,6 +99,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
+    // commands, running already-scheduled commands, removing finished or interrupted commands,
+    // and running subsystem periodic() methods.  This must be called from the robot's periodic
+    // block in order for anything in the Command-based framework to work.
+    CommandScheduler.getInstance().run();
   }
 
   /**
@@ -71,6 +119,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    processRobotModeChange(RobotMode.AUTONOMOUS);
+
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
@@ -94,8 +144,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    processRobotModeChange(RobotMode.TELEOP);
+
     canDeviceFinder.find();
-    logger.info ("Found: " + canDeviceFinder.getDeviceSet());
+    logger.info ("Found: {}", canDeviceFinder.getDeviceSet());
   }
 
   /**
@@ -107,6 +159,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
+    processRobotModeChange(RobotMode.TEST);
+
     canDeviceFinder.research();
   }
 
@@ -116,4 +170,28 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
   }
+
+  @Override
+  public void disabledInit() {
+    processRobotModeChange(RobotMode.DISABLED);
+  }
+
+  @Override
+  public void disabledPeriodic() {
+  }
+
+  /*
+	 * this routine gets called whenever we change modes
+	 */
+	void processRobotModeChange(RobotMode newMode) {
+		logger.info("Switching from {} to {}", currentRobotMode, newMode);
+		
+		previousRobotMode = currentRobotMode;
+		currentRobotMode = newMode;
+
+		// if any subsystems need to know about mode changes, let
+		// them know here.
+		// exampleSubsystem.processRobotModeChange(newMode);
+  }  
+
 }

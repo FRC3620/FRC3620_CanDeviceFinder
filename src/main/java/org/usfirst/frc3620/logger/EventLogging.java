@@ -1,20 +1,5 @@
 package org.usfirst.frc3620.logger;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-import java.util.logging.StreamHandler;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import org.apache.logging.log4j.Level;
-
 public class EventLogging {
 
     // make some levels that correspond to the different SLF4J logging
@@ -36,6 +21,7 @@ public class EventLogging {
     // do this when first loaded
     static {
         System.setProperty("log4j2.contextSelector", "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
+        System.setProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager");
     }
 
     /**
@@ -83,15 +69,4 @@ public class EventLogging {
   	  logger.info("command {}", stackTraceElement[1].getMethodName());
     }
 
-    /**
-     * Write a warning message to the DriverStation.
-     * 
-     * @param message
-     *            Message to log.
-     */
-    public static final void writeWarningToDS(String message) {
-        if (DriverStation.getInstance().isDSAttached()) {
-        	DriverStation.reportWarning(message, false);
-        }
-    }
 }
